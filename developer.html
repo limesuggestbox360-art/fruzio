@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mint | Developer API</title>
+    <style>
+        :root {
+            --mint-green: #7baf62;
+            --bg-dark: #1e1e1e;
+            --bg-panel: #252526;
+            --border: #333;
+            --text-main: #d4d4d4;
+            --text-dim: #888;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg-dark); 
+            color: var(--text-main); 
+            margin: 0; 
+            line-height: 1.5; 
+        }
+
+        .wrapper { display: flex; min-height: 100vh; }
+
+                header { 
+            padding: 20px 15%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .link {
+            text-decoration: none; /* Removes the underline */
+            color: rgb(255, 255, 255);          /* Sets a specific color */
+        }
+
+        /* This specifically targets visited links */
+        .link:visited {
+            color: rgb(255, 255, 255);          /* Prevents the purple color */
+        }
+
+        .search-input {
+            width: 200px;
+            background: #181818;
+            border: 1px solid #444;
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: white;
+            transition: width 0.4s ease, border-color 0.3s;
+        }
+
+        .header img {
+            align-self: baseline;
+            transition: transform 0.3s ease, filter 0.3s;
+        }
+        
+        /* Center the items vertically and horizontally */
+        .logo-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;    /* Centers text horizontally */
+            text-decoration: none;
+            gap: 0;                 /* Removes space between lines */
+        }
+
+        /* Ensure the main logo section is also centered */
+        .logo-main { 
+            font-family: Georgia, serif;
+            font-size: 40px; 
+            font-weight: bold; 
+            color: #fff;
+            line-height: 1;         /* Tightens the gap */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-top { 
+            font-family: Georgia, serif;
+            font-size: 18px;
+            font-weight: bold; 
+            color: #fff;
+            line-height: 1;
+        }
+        .logo span { color: var(--text-muted); font-weight: normal; margin-left: 10px; font-size: 20px; }
+        .logo img { height: 45px; margin-right: 10px; filter: grayscale(1) brightness(2); }
+
+        .search-container input {
+            background: #444;
+            border: 1px solid #555;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            width: 200px;
+        }
+
+        nav { 
+            width: 260px; 
+            background: #2d2d2d; 
+            padding: 20px; 
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        nav h3 { color: var(--mint-green); font-size: 0.8rem; text-transform: uppercase; margin-top: 20px; }
+        nav a { display: block; color: #bbb; text-decoration: none; font-size: 0.9rem; margin: 5px 0; }
+        nav a:hover { color: var(--mint-green); }
+
+        main { flex: 1; padding: 40px 60px; max-width: 1000px; }
+
+        h1 { border-bottom: 2px solid var(--mint-green); padding-bottom: 10px; }
+        h2 { color: var(--mint-green); margin-top: 60px; border-bottom: 1px solid var(--border); }
+
+        .cmd-block { 
+            background: var(--bg-panel); 
+            border: 1px solid var(--border); 
+            border-radius: 6px; 
+            margin: 20px 0; 
+            padding: 20px; 
+        }
+
+        .cmd-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 15px;
+        }
+
+        .wrapper a {
+            display: flex;
+            transition:
+                text-shadow 0.6s, 
+                transform 0.4s;
+        }
+
+        .wrapper a:hover { /* CSS STYLING LOOKING SO GOOD WOW */
+            transform: scale(1.05) translateX(10px);
+            text-shadow: 0 0 8px #00ffff;;
+        }
+
+        .cmd-name { font-family: 'Consolas', monospace; color: #4ec9b0; font-size: 1.2rem; font-weight: bold; }
+        
+        pre { background: #000; padding: 15px; border-radius: 5px; overflow-x: auto; color: #ce9178; font-size: 0.85rem; }
+        code { color: #569cd6; }
+        .comment { color: #6a9955; }
+
+        footer { margin-top: 100px; color: var(--text-dim); font-size: 0.8rem; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<header class="search-group" style="color: #1e1e1e;">
+    <a href="index.html" class="logo-container">
+        <span class="logo-top">Fruzio</span>
+        <div class="logo-main">
+            <span class="link">Mint</span> 
+            <img src="Mint.png" alt="leaf" style="height: 45px; margin-left: 8px;">
+        </div>
+    </a>
+    <div class="search-container">
+        <img src="Search.png" alt="" height="30" class="search-icon"><input class="search-input" type="text" placeholder="Search...">
+    </div>
+</header>
+
+<div class="wrapper">
+    <nav>
+        <div style="font-weight: bold; font-size: 1.5rem; margin-bottom: 30px;">MINT <span style="color:var(--mint-green)">DOC</span></div>
+        <h3>1. Developer API</h3>
+        <a href="#py">Python Integration</a>
+        <a href="#custom">Custom Commands</a>
+        <a href="#deps">Dependencies</a>
+        <h3>2. Contributors</h3>
+        <a href="#workflow">Update Workflow</a>
+    </nav>
+
+    <main>
+        <h1>Developer API</h1>
+        <p>Advanced guide for extending Mint via Python and custom logic gates.</p>
+
+        <h2 id="py">Python Integration</h2>
+        <div class="cmd-block" id="py-cmd">
+            <div class="cmd-header"><div class="cmd-name">py(code)</div></div>
+            <p>Executes raw Python strings. Semicolons separate multiple statements.</p>
+            <pre>py(print("Run Python"); x = 10; print(x))</pre>
+        </div>
+
+        <h2 id="custom">Custom Command Templates</h2>
+        
+        <div class="cmd-block">
+            <h3>Standard Command</h3>
+            <p>Basic structure for new tags in <code>mint.py</code>.</p>
+            <pre>
+elif tag == "command":
+    try:
+        print("Success")
+    except Exception as e:
+        print(f"Error: {e}")
+        return</pre>
+        </div>
+
+        <div class="cmd-block">
+            <h3>Multiline Logic</h3>
+            <p>Handles codes split by <code>;</code> inside a single tag.</p>
+            <pre>
+elif tag == "command":
+    parts = val.split(",", 1) 
+    commands = parts[1].split(";")
+    for cmd in commands:
+        # Run sub-command logic
+        pass</pre>
+        </div>
+
+        <h2 id="deps">Module Management</h2>
+        <p>Edit <code>mod.bat</code> at line 13-15 to include new libraries.</p>
+        <pre>pip install library_name</pre>
+        <p>Remove <code>pause</code> to hide the console after setup.</p>
+
+        <h2 id="workflow">Contributor Workflow</h2>
+        <div class="cmd-block">
+            <p>Follow these steps to sync core changes with the VS Code extension:</p>
+            <ul>
+                <li>Modify <strong>syntaxes/mint.tmLanguage.json</strong> for highlighting.</li>
+                <li>Update <strong>package.json</strong> or <strong>extension.js</strong> if needed.</li>
+                <li>Finally run <code>vsce package</code> in the terminal to build.</li>
+            </ul>
+        </div>
+
+        <footer>
+            &copy; 2026 Fruzio Open Source
+        </footer>
+    </main>
+</div>
+
+</body>
+</html>

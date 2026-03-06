@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mint | Command Reference</title>
+    <style>
+        :root {
+            --mint-green: #7baf62;
+            --bg-dark: #1e1e1e;
+            --bg-panel: #252526;
+            --border: #333;
+            --text-main: #d4d4d4;
+            --text-dim: #888;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg-dark); 
+            color: var(--text-main); 
+            margin: 0; 
+            line-height: 1.5; 
+        }
+
+        .wrapper { display: flex; min-height: 100vh; }
+
+        header { 
+            padding: 20px 15%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .wrapper a {
+            display: flex;
+            transition:
+                text-shadow 0.6s, 
+                transform 0.4s;
+        }
+
+        .wrapper a:hover { 
+            transform: scale(1.05) translateX(10px);
+            text-shadow: 0 0 8px #00ffff;;
+        }
+
+        .link {
+            text-decoration: none;
+            color: rgb(255, 255, 255);         
+        }
+
+
+        .link:visited {
+            color: rgb(255, 255, 255);
+        }
+
+        .search-input {
+            width: 200px;
+            background: #181818;
+            border: 1px solid #444;
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: white;
+            transition: width 0.4s ease, border-color 0.3s;
+        }
+
+        .header img {
+            align-self: baseline;
+            transition: transform 0.3s ease, filter 0.3s;
+        }
+        
+        /* Center the items vertically and horizontally */
+        .logo-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: center;    /* Centers text horizontally */
+            text-decoration: none;
+            gap: 0;                 /* Removes space between lines */
+        }
+
+        /* Ensure the main logo section is also centered */
+        .logo-main { 
+            font-family: Georgia, serif;
+            font-size: 40px; 
+            font-weight: bold; 
+            color: #fff;
+            line-height: 1;         /* Tightens the gap */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-top { 
+            font-family: Georgia, serif;
+            font-size: 18px;
+            font-weight: bold; 
+            color: #fff;
+            line-height: 1;
+        }
+        .logo span { color: var(--text-muted); font-weight: normal; margin-left: 10px; font-size: 20px; }
+        .logo img { height: 45px; margin-right: 10px; filter: grayscale(1) brightness(2); }
+
+        .search-container input {
+            background: #444;
+            border: 1px solid #555;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            width: 200px;
+        }
+
+        nav { 
+            width: 260px; 
+            background: #2d2d2d; 
+            padding: 20px; 
+            border-right: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        nav h3 { color: var(--mint-green); font-size: 0.8rem; text-transform: uppercase; margin-top: 20px; }
+        nav a { display: block; color: #bbb; text-decoration: none; font-size: 0.9rem; margin: 5px 0; }
+        nav a:hover { color: var(--mint-green); }
+
+        main { flex: 1; padding: 40px 60px; max-width: 1000px; }
+
+        h1 { border-bottom: 2px solid var(--mint-green); padding-bottom: 10px; }
+        h2 { color: var(--mint-green); margin-top: 60px; border-bottom: 1px solid var(--border); }
+
+        .cmd-block { 
+            background: var(--bg-panel); 
+            border: 1px solid var(--border); 
+            border-radius: 6px; 
+            margin: 20px 0; 
+            padding: 20px; 
+        }
+
+        .cmd-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 15px;
+        }
+
+        .cmd-name { font-family: 'Consolas', monospace; color: #4ec9b0; font-size: 1.2rem; font-weight: bold; }
+        
+        .param-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .param-table th { text-align: left; color: var(--text-dim); font-size: 0.8rem; border-bottom: 1px solid var(--border); padding: 8px; }
+        .param-table td { padding: 8px; font-size: 0.9rem; border-bottom: 1px solid #333; }
+        
+        code { background: #000; padding: 2px 5px; border-radius: 3px; color: #ce9178; }
+        .type { color: #569cd6; font-style: italic; }
+
+        footer { margin-top: 100px; color: var(--text-dim); font-size: 0.8rem; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<header class="search-group" style="color: #1e1e1e;">
+    <a href="index.html" class="logo-container">
+        <span class="logo-top">Fruzio</span>
+        <div class="logo-main">
+            <span class="link">Mint</span> 
+            <img src="Mint.png" alt="leaf" style="height: 45px; margin-left: 8px;">
+        </div>
+    </a>
+    <div class="search-container">
+        <img src="Search.png" alt="" height="30" class="search-icon"><input class="search-input" type="text" placeholder="Search...">
+    </div>
+</header>
+    
+<div class="wrapper">
+    <nav>
+        <div style="font-weight: bold; font-size: 1.5rem; margin-bottom: 30px;">MINT <span style="color:var(--mint-green)">DOC</span></div>
+        <h3>1. Basics</h3>
+        <a href="#write">How to print</a>
+        <a href="#calc">How to calculate</a>
+        <a href="#wait">How to wait</a>
+        <h3>2. Logic</h3>
+        <a href="#if">How to use Ifs</a>
+        <a href="#repeat">How to use repeats</a>
+        <a href="#while">How to use whiles</a>
+        <h3>3. Media</h3>
+        <a href="#img">How to use images</a>
+        <a href="#video">How to use video</a>
+        <h3>4. AI</h3>
+        <a href="#tinyai">How to use Local AI</a>
+        <a href="#ai">How to use AI</a>
+    </nav>
+
+    <main>
+        <h1>Command Dictionary</h1>
+        <p>A formal breakdown of the Mint language instruction set, parameters, and expected behaviors.</p>
+
+        <h2 id="basics">1. Basic Commands</h2>
+
+        <div class="cmd-block" id="write">
+            <div class="cmd-header"><div class="cmd-name">write(string)</div></div>
+            <p>Outputs literal text or evaluated expressions to the system console. Supports string concatenation.</p>
+            <table class="param-table">
+                <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>string</code></td><td class="type">Text/Var</td><td>The content to display. Use <code>@var</code> to inject variable data.</td></tr>
+            </table>
+        </div>
+
+        <div class="cmd-block" id="calc">
+            <div class="cmd-header"><div class="cmd-name">calc(equation)</div></div>
+            <p>Invokes the internal math engine to solve arithmetic strings. Follows standard PEMDAS order of operations.</p>
+            <table class="param-table">
+                <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>equation</code></td><td class="type">Expr</td><td>Mathematical string (e.g., "10 * (5 + 2)").</td></tr>
+            </table>
+        </div>
+
+        <div class="cmd-block" id="wait">
+            <div class="cmd-header"><div class="cmd-name">wait(seconds)</div></div>
+            <p>Suspends thread execution for a specified duration.</p>
+            <table class="param-table">
+                <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>seconds</code></td><td class="type">Int/Float</td><td>Time to pause in seconds (e.g., 0.5 for half a second).</td></tr>
+            </table>
+        </div>
+
+        <h2 id="logic">2. Control Flow</h2>
+
+        <div class="cmd-block" id="if">
+            <div class="cmd-header"><div class="cmd-name">if(condition, code)</div></div>
+            <p>Evaluates a boolean condition. If true, executes the provided code block or single command.</p>
+            <table class="param-table">
+                <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>condition</code></td><td class="type">Boolean</td><td>Comparison (e.g., <code>x > 10</code>).</td></tr>
+                <tr><td><code>code</code></td><td class="type">Block</td><td>Commands to run, separated by <code>;</code> or wrapped in <code>{}</code>.</td></tr>
+            </table>
+        </div>
+
+        <h2 id="media">3. Media Engine</h2>
+
+        <div class="cmd-block" id="video">
+            <div class="cmd-header"><div class="cmd-name">video(file)</div></div>
+            <p>Spawns a VLC process to play high-definition video files. Requires VLC Media Player installed on the host system.</p>
+            <table class="param-table">
+                <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>file</code></td><td class="type">Path</td><td>Relative or absolute path to <code>.mp4</code>, <code>.mkv</code>, or <code>.avi</code>.</td></tr>
+            </table>
+        </div>
+
+        <h2 id="ai-section">4. Artificial Intelligence</h2>
+
+        <div class="cmd-block" id="tinyai">
+            <div class="cmd-header"><div class="cmd-name">tinyai(msg, var, instruct, info, temp, token)</div></div>
+            <p>The primary command for Local AI interaction via the <code>.gguf</code> model. Operates entirely offline.</p>
+            <table class="param-table">
+                <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>msg</code></td><td class="type">Text</td><td>The prompt or question sent to the LLM.</td></tr>
+                <tr><td><code>var</code></td><td class="type">ID</td><td>The variable name where the AI response will be stored.</td></tr>
+                <tr><td><code>instruct</code></td><td class="type">Text</td><td>System-level instructions (e.g., "You are a poet").</td></tr>
+                <tr><td><code>info</code></td><td class="type">Text</td><td>Additional context or RAG data. Use <code>.default</code> to skip.</td></tr>
+                <tr><td><code>temp</code></td><td class="type">Float</td><td>Creativity/Randomness (0.1 to 1.0). Use <code>.default</code> for 0.7.</td></tr>
+                <tr><td><code>token</code></td><td class="type">Int</td><td>Maximum response length. Use <code>.default</code> for 512.</td></tr>
+            </table>
+        </div>
+
+        <div class="cmd-block" id="ai">
+            <div class="cmd-header"><div class="cmd-name">ai(model, key, role, msg, var)</div></div>
+            <p>Connects to OpenAI-compatible endpoints. Requires an active internet connection.</p>
+            <table class="param-table">
+                <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>model</code></td><td class="type">String</td><td>Model ID (e.g., "gpt-4o").</td></tr>
+                <tr><td><code>key</code></td><td class="type">String</td><td>Your secret API key.</td></tr>
+                <tr><td><code>role</code></td><td class="type">String</td><td>The system role definition.</td></tr>
+                <tr><td><code>msg</code></td><td class="type">Text</td><td>The user prompt.</td></tr>
+                <tr><td><code>var</code></td><td class="type">ID</td><td>Variable to store the resulting JSON/text.</td></tr>
+            </table>
+        </div>
+
+        <footer>
+            &copy; 2026 Fruzio Open Source. All parameters must be comma-separated.
+        </footer>
+    </main>
+</div>
+
+</body>
+</html>

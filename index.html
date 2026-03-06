@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mint</title>
+    <style>
+        :root {
+            --mint-green: #7baf62;
+            --mint-midgreen: rgb(81, 125, 60);
+            --mint-darkgreen: #324e25;
+            --bg-dark: #2f2c2b;
+            --bg-panel: #3d3d3d;
+            --text-light: #ccc;
+            --text-muted: #999;
+            --error: #ff0c0c;
+            --warn:#d8b52a;
+        }
+
+        #ai-chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* Floating Toggle Button */
+        #ai-toggle {
+            background: var(--mint-green);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 24px;
+            color: blue;
+        }
+
+        /* Chat Window Box */
+        #ai-window {
+            resize: both;          
+            overflow: hidden;      
+            min-width: 250px;      
+            min-height: 450px;
+            display: none; /* Hidden by default */
+            width: 450px;
+            height: 450px;
+            background: var(--bg-panel);
+            border: 1px solid #444;
+            border-radius: 10px;
+            flex-direction: column;
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            
+            background: rgba(255, 255, 255, 0.2); 
+            
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Section */
+        .ai-header {
+            background: var(--mint-darkgreen, 0.2);
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            
+            background: rgb(81, 125, 60, 0.5); 
+            
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .ai-header-close {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Messages Area */
+        #ai-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            
+        }
+
+        .ai-msg-bubble {
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            
+            background: rgba(255, 255, 255, 0.2); 
+            
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Input Area */
+        .ai-footer {
+            padding: 10px;
+            border-top: 1px solid #444;
+            display: flex;
+            gap: 5px;
+        }
+
+        #ai-input {
+            flex: 1;
+            background: #222;
+            border: 1px solid #555;
+            color: white;
+            padding: 8px;
+            border-radius: 25px;
+        }
+
+        .ai-send-btn {
+            background: var(--mint-green, 0.2);
+            border: none;
+            color: white;
+            padding: 0 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        mark {
+            background-color: rgba(123, 175, 98, 0.4); /* Your mint green at 40% opacity */
+            color: #fff;
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+
+        #ai-messages h2, #ai-messages h3 {
+            color: var(--mint-green);
+            margin: 10px 0 5px 0;
+            font-size: 16px;
+        }
+
+        #ai-messages hr {
+            margin: 10px 0;
+            border-color: #555;
+        }
+
+        body { 
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            background: var(--bg-dark); 
+            color: var(--text-light); 
+            line-height: 1.6;
+        }
+
+        /* Top Header */
+        header { 
+            padding: 20px 15%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-input {
+            width: 200px;
+            background: #333;
+            border: 1px solid #444;
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: white;
+            transition: width 0.4s ease, border-color 0.3s;
+        }
+
+        .header img {
+            align-self: baseline;
+            transition: transform 0.3s ease, filter 0.3s;
+        }
+        
+        .logo-container {
+            display: flex;
+            flex-direction: column; 
+            align-items: flex-start;
+            text-decoration: none;
+        }
+
+        .logo-top { 
+            font-family: Georgia, serif;
+            font-size: 18px;
+            font-weight: bold; 
+            color: #fff;
+            line-height: 1;
+        }
+
+        .logo-main { 
+            font-family: Georgia, serif;
+            font-size: 40px; 
+            font-weight: bold; 
+            color: #fff;
+            line-height: 1.1;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo span { color: var(--text-muted); font-weight: normal; margin-left: 10px; font-size: 20px; }
+        .logo img { height: 45px; margin-right: 10px; filter: grayscale(1) brightness(2); }
+
+        .search-container input {
+            background: #444;
+            border: 1px solid #555;
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: white;
+            width: 200px;
+        }
+
+        /* Hero / Intro Section */
+        .hero-container {
+            padding: 40px 15%;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 50px;
+            background: #252525; /* Slightly darker texture area */
+        }
+
+        .hero-info h1 { font-size: 18px; color: var(--text-muted); font-weight: normal; }
+        .hero-info p { font-size: 22px; color: #aaa; margin-bottom: 20px; }
+        .hero-info b { color: var(--mint-green); }
+        .hero-head { font-size: 30px; color: var(--mint-green); text-align: center;}
+
+        .download-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .download-box {
+            background: var(--bg-panel);
+            padding: 30px;
+            border-radius: 5px;
+            text-align: center;
+            border: 1px solid #444;
+            height: fit-content;
+            transition: 
+                background 0.3s, 
+                box-shadow 0.3s,
+                transform 0.4s;
+        }
+
+        .download-box:hover {
+            background: #2c2c2c;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transform: scale(1.05);
+        }
+
+        .md-icon {
+            filter: grayscale(1) brightness(2);
+        }
+
+        .version-tag { font-size: 24px; font-weight: bold; color: #fff; display: block; }
+        .release-notes { font-size: 12px; color: var(--mint-green); text-decoration: none; }
+
+        .btn-install {
+            display: block;
+            background: var(--mint-green);
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 
+                background 0.2s,
+                transform 0.5s;
+        }
+
+        .btn-install:hover {
+            background-color: #345026;
+            transform: scale(1.05);
+        }
+
+        .old-btn-install {
+            display: block;
+            background: var(--mint-midgreen);
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 45px;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 
+                background 0.2s,
+                transform 0.5s;
+        }
+
+        .old-btn-install:hover {
+            background-color: var(--mint-darkgreen);
+            transform: scale(1.05);
+        }
+
+        /* Icon Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            padding: 60px 15%;
+        }
+
+        .grid-item { display: flex; gap: 20px; }
+        .grid-item .icon { 
+            width: 60px; height: 60px; 
+            background: #444; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .grid-content h3 { margin: 0; color: #fff; font-size: 18px; }
+        .grid-content p { font-size: 13px; color: #888; margin: 5px 0; }
+        .grid-content a { color: var(--mint-green); text-decoration: none; font-size: 13px; }
+
+        hr { border: 0; border-top: 1px solid #444; margin: 0 15%; }
+    </style>
+</head>
+<body>
+
+<header class="search-group">
+    <a href="index.html" class="logo-container">
+        <span class="logo-top">Fruzio</span>
+        <div class="logo-main">
+            Mint <img src="Mint.png" alt="leaf" style="height: 50px; margin-left: 5px;">
+        </div>
+    </a>    
+    <div class="search-container">
+        <img src="Search.png" alt="" height="30" class="search-icon"><input class="search-input" type="text" placeholder="Search...">
+    </div>
+</header>
+
+<div class="hero-container">
+    <div class="hero-info">
+        <h3 class="hero-head">About</h3>
+        <p>Mint is a <b>open-source</b> programming language</p>
+        <p>Mint is <b>FREE</b> to use, so no need to worry about paying for anything!!</p>
+        <div class="hero-details">
+            <h3 class="hero-head">Installation</h3>
+            <hr color="white">
+            <p>1. Install the zip file and the 1.3.0 .vsix extension as well.</p>
+            <br>
+            <p>2. Place it in a safe area.</p>
+            <br>
+            <p>3. Run the mod.bat, setup.bat as administrator and let it do the rest!</p>
+         </div>
+    </div>
+    
+    <div class="download-stack">
+        <div class="download-box">
+            <span class="version-tag"><img src="Mint.png" alt="" height="50" class="md-icon">Latest build 1.3.0</span>
+            <a href="https://github.com/limesuggestbox360-art/Mint" class="release-notes">Read Manual(Recommended)</a>
+            <a href="https://github.com/limesuggestbox360-art/Mint/releases/tag/v1.3" class="btn-install">Download for Windows(AMD)</a>
+            <div class="o-download-box">
+                <a href="https://github.com/limesuggestbox360-art/Mint/releases" class="old-btn-install">View all versions</a>
+            </div>
+        </div>
+
+        <div class="download-box">
+            <span class="version-tag" style="color: var(--warn);"><img src="Mint.png" alt="" height="50" class="md-icon">(Legacy) Build 1.0.2</span>
+            <a href="https://github.com/limesuggestbox360-art/Mint" class="release-notes">Read Manual(Recommended)</a>
+            <a href="https://github.com/limesuggestbox360-art/Mint/releases/tag/v1" class="btn-install">Download for Windows(AMD)</a>
+            <div class="o-download-box">
+                <a href="https://github.com/limesuggestbox360-art/Mint/releases" class="old-btn-install">View all versions</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="main-grid">
+    <div class="grid-item">
+        <div class="icon">⚙️</div>
+        <div class="grid-content">
+            <h3>About</h3>
+            <p>Fast syntax and lightweight core.</p>
+        </div>
+    </div>
+    <div class="grid-item">
+        <div class="icon">📖</div>
+        <div class="grid-content">
+            <h3>Learn</h3>
+            <a href="document.html">Documentaries & Tutorial</a>
+        </div>
+    </div>
+    <div class="grid-item">
+        <div class="icon">🛠️</div>
+        <div class="grid-content">
+            <h3>Tools</h3>
+            <a href="developer.html">How to create custom modules</a>
+        </div>
+    </div>
+    <div class="grid-item">
+        <div class="icon"><img src="github.png" alt="" height="35"></div>
+        <div class="grid-content">
+            <h3>Community</h3>
+            <a href="">Get involved in the community</a>
+        </div>
+    </div>
+</div>
+
+<div id="ai-chat-container">
+    <button id="ai-toggle">✨</button>
+    
+    <div id="ai-window">
+        <div class="ai-header">
+            <span>Mint AI Helper</span>
+            <button onclick="toggleChat()" class="ai-header-close">✕</button>
+        </div>
+        
+        <div id="ai-messages">
+            <div class="ai-msg-bubble">Hi! Ask me about <b>Mint</b> syntax or setup.</div>
+        </div>
+        
+        <div class="ai-footer">
+            <input type="text" id="ai-input" placeholder="How do I use mod.bat?">
+            <button onclick="askAI()" class="ai-send-btn">Send</button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+const aiInput = document.getElementById('ai-input');
+const aiMessages = document.getElementById('ai-messages');
+const aiWindow = document.getElementById('ai-window');
+
+function toggleChat() {
+    const isFlex = aiWindow.style.display === 'flex';
+    aiWindow.style.display = isFlex ? 'none' : 'flex';
+}
+
+document.getElementById('ai-toggle').addEventListener('click', toggleChat);
+
+function appendMessage(sender, text) {
+    const msgDiv = document.createElement('div');
+    msgDiv.style.background = sender === 'User' ? '#444' : '#333';
+    msgDiv.style.padding = '10px';
+    msgDiv.style.borderRadius = '5px';
+    msgDiv.style.whiteSpace = 'pre-wrap'; 
+
+    let formattedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') 
+        .replace(/### (.*?)\n/g, '<h4 style="margin:5px 0; color:#7baf62;">$1</h4>');
+
+    msgDiv.innerHTML = `<b>${sender}:</b><br>${formattedText}`;
+    aiMessages.appendChild(msgDiv);
+    aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+
+const MINT_KNOWLEDGE = "You are the Mint AI Helper. Language: Mint is open-source. Setup: Install zip and 1.3.0 .vsix. Run mod.bat and setup.bat as Admin.";
+
+async function askAI() {
+    const userInput = aiInput.value.trim();
+    if (!userInput) return;
+
+    appendMessage('User', userInput);
+    aiInput.value = '';
+
+    const loadingDiv = document.createElement('div');
+    loadingDiv.innerText = "Mint AI is thinking...";
+    aiMessages.appendChild(loadingDiv);
+
+    try {
+        const myPass = localStorage.getItem("admin_pass") || ""; 
+
+        const response = await fetch('http://localhost:3000/api/generate', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-bypass-code': myPass 
+            },
+            body: JSON.stringify({ prompt: userInput }) 
+        });
+
+        const data = await response.json();
+        loadingDiv.remove();
+
+        if (data.error) {
+            const errorMsg = typeof data.error === 'object' ? JSON.stringify(data.error) : data.error;
+            appendMessage('System', `⚠️ ${errorMsg}`);
+            return;
+        }
+        if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+            const aiText = data.candidates[0].content.parts[0].text;
+            appendMessage('Mint AI', aiText);
+        } else {
+            appendMessage('System', "Empty response. Check server logs.");
+        }
+    } catch (error) {
+        if (loadingDiv) loadingDiv.remove();
+        appendMessage('System', `Connection Error: ${error.message}`);
+    }
+}
+
+// Unified Search Logic with Highlighting
+const searchInput = document.querySelector('.search-input');
+searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    const items = document.querySelectorAll('.grid-item, .hero-info p, .download-box');
+    
+    items.forEach(el => {
+        // Store original HTML once
+        if (!el.dataset.original) el.dataset.original = el.innerHTML;
+        
+        if (query === "") {
+            el.innerHTML = el.dataset.original;
+            el.style.display = "";
+            return;
+        }
+
+        const text = el.innerText.toLowerCase();
+        if (text.includes(query)) {
+            el.style.display = "";
+            const regex = new RegExp(`(${query})`, 'gi');
+            el.innerHTML = el.dataset.original.replace(regex, '<mark>$1</mark>');
+        } else {
+            el.style.display = "none";
+        }
+    });
+});
+</script>
+
+<script>
+    function searchPage() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const items = document.querySelectorAll('.grid-item, .hero-info p, .download-box');
+        const notice = document.getElementById('noResults');
+        let found = false;
+
+        items.forEach(el => {
+            // 1. Remove previous highlights to prevent nesting <mark> tags
+            if (el.originalText === undefined) {
+                el.originalText = el.innerHTML; // Store the clean HTML first time
+            }
+            el.innerHTML = el.originalText;
+
+            if (query === "") {
+                el.style.display = "";
+                return;
+            }
+
+            // 2. Search and Highlight
+            const content = el.innerHTML;
+            const regex = new RegExp(`(${query})`, 'gi');
+            
+            if (content.toLowerCase().includes(query)) {
+                el.innerHTML = content.replace(regex, '<mark>$1</mark>');
+                el.style.display = "";
+                found = true;
+            } else {
+                el.style.display = "none";
+            }
+        });
+
+        notice.style.display = (found || query === "") ? "none" : "block";
+    }
+</script>
+
+</body>
+</html>
